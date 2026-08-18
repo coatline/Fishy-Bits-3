@@ -23,13 +23,13 @@ public class Shrimp : MonoBehaviour
 
         var distance = Vector3.Distance(transform.position, player.transform.position);
 
-        if (distance < 6)
+        if (distance < 5)
         {
-            transform.position = Vector3.MoveTowards(transform.position, player.transform.position, -3f * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, player.transform.position, -2f * Time.deltaTime);
         }
-        else if (distance > 70 && rb.IsSleeping())
+        else if (distance > 40 && rb.IsSleeping())
         {
-            transform.position = new Vector3(Random.Range(-70, 70), Random.Range(-30, 30), 0);
+            transform.position = new Vector3(Random.Range(-50, 50), Random.Range(-30, 30), 0);
         }
     }
 
@@ -38,11 +38,11 @@ public class Shrimp : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             Scoretext.Points++;
-            transform.position = new Vector3(Random.Range(-70, 70), Random.Range(-30, 30), 0);
+            transform.position = new Vector3(Random.Range(-50, 50), Random.Range(-30, 30), 0);
         }
         else if (collision.gameObject.tag == "Shark")
         {
-            transform.position = new Vector3(Random.Range(-70, 70), Random.Range(-30, 30), 0);
+            transform.position = new Vector3(Random.Range(-50, 50), Random.Range(-30, 30), 0);
         }
 
     }

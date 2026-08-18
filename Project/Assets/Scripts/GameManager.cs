@@ -8,8 +8,11 @@ public class GameManager : MonoBehaviour {
     public GameObject bubblePrefab;
     public GameObject shrimpPrefab;
     public GameObject sharkPrefab;
+    float sharkTimer;
+    float shrimpTimer;
 
     void Start () {
+
         for(int i = 0; i < 100; i++)
         {
             Instantiate(shrimpPrefab);
@@ -25,6 +28,24 @@ public class GameManager : MonoBehaviour {
             Instantiate(sharkPrefab);
         }
     }
-	
+
+    private void Update()
+    {
+        if (sharkTimer > 20)
+        {
+            Instantiate(sharkPrefab);
+            sharkTimer = 0;
+        }
+        else
+            sharkTimer += Time.deltaTime;
+
+        if (shrimpTimer > 0.25f)
+        {
+            Instantiate(shrimpPrefab);
+            shrimpTimer = 0;
+        }
+        else
+            shrimpTimer += Time.deltaTime;
+    }
 
 }

@@ -27,7 +27,7 @@ public class Bubble : MonoBehaviour {
 
             speed = Random.Range(.01f, .1f);
 
-            rigidbody2d.velocity = new Vector3(0, 0, 0);
+            rigidbody2d.linearVelocity = new Vector3(0, 0, 0);
 
             transform.position = new Vector3(Random.Range(-80, 80), Random.Range(-35, 10), 0);
         }

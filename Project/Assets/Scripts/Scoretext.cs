@@ -17,7 +17,7 @@ public class Scoretext : MonoBehaviour {
         set
         {
             staticScore.points = value;
-            staticScore.scoreText.text = "" + staticScore.points;
+            staticScore.GetComponent<Text>().text = "" + staticScore.points;
 
         }
     }

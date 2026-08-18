@@ -7,68 +7,68 @@ using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
     int level = 1;
-    SpriteRenderer renderer;
+    SpriteRenderer sr;
     Vector2 mousePos;
     public float speed;
     Rigidbody2D rb;
     public Sprite[] fishySprites;
     public Sprite[] deathSprites;
     public Image bar;
+    public GameObject diedText;
+
+    bool died;
 
     void Start()
     {
-        renderer = GetComponent<SpriteRenderer>();
+        sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+
+        if (fishySprites.Length > 0)
+            sr.sprite = fishySprites[0];
     }
 
     void Update()
     {
+        if (died)
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+                SceneManager.LoadScene(0);
+            return;
+        }
+
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         var rot = Quaternion.FromToRotation(Vector3.right, mousePos - (Vector2)transform.position);
 
-        //Debug.DrawLine(transform.position, mousePos);
         transform.rotation = rot;
 
         if (Vector3.Distance(mousePos, transform.position) > 0.2f)
             transform.position += transform.right * speed * Time.deltaTime;
-
-        
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Shark"))
         {
             // change sprite to dead sprite
-            switch (level)
-            {
-                case 1:
-                    renderer.sprite = deathSprites[0];
-                    break;
-                case 2:
-                    renderer.sprite = deathSprites[1];
-                    break;
-            }
+            if (level <= deathSprites.Length)
+                sr.sprite = deathSprites[level - 1];
+            else
+                sr.sprite = deathSprites[deathSprites.Length - 1];
 
-            enabled = false;
-            rb.velocity = new Vector2(0, 0);
+            died = true;
+            rb.linearVelocity = new Vector2(0, 0);
             rb.gravityScale = .02f;
-            if (!enabled)
-            {
-                if (Input.anyKeyDown)
-                {
-                    SceneManager.LoadScene(0);
-                }
-            }
+            diedText.SetActive(true);
         }
 
         //if certain mass, change the sprite (evolve)
         else if (collision.gameObject.CompareTag("Shrimp"))
         {
             transform.localScale += new Vector3(.1f, .1f, 0);
-            rb.mass += .05f;
+            rb.mass += .1f;
             speed -= rb.mass / 4;
-            bar.fillAmount += .05f;
+            bar.fillAmount += .1f;
             if (rb.mass > 1f)
             {
                 //level text
@@ -76,28 +76,14 @@ public class Player : MonoBehaviour
                 bar.fillAmount = 0;
                 speed = 10;
                 rb.mass = .01f;
-                switch (level)
+
+                if (level <= fishySprites.Length)
+                    sr.sprite = fishySprites[level - 1];
+                else
                 {
-
-                    case 1:
-                        renderer.sprite = fishySprites[0];
-                        break;
-                    case 2:
-                        renderer.sprite = fishySprites[1];
-                        break;
-                    case 3:
-                        renderer.sprite = fishySprites[2];
-                        break;
-                    case 4:
-                        renderer.sprite = fishySprites[3];
-                        break;
-                    case 5:
-                        renderer.sprite = fishySprites[4];
-                        break;
+                    transform.localScale *= 1.1f;
+                    Camera.main.orthographicSize += 0.2f;
                 }
-
-                print(renderer.sprite);
-                transform.localScale = new Vector3(8, 8, 0);
             }
         }
     }
